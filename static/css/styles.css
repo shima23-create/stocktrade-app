@@ -1,0 +1,253 @@
+/* --------------------------------------------header-------------------------------------------- */
+
+.bd-place holder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .header-icon {
+        background-image: url("../images/demo-rogo.png");
+        width: 80px;
+        height: 40px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+      }
+/* --------------------------------------header-------------------------------------------------- */
+
+
+/* --------------------------------------main----------------------------------------------------- */
+.main_container {
+    width: 100%;
+    padding: 10px 100px;
+
+}
+
+.m_container_1 {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.major_stock {
+  width: 45%;
+}
+.major_stock li {
+    margin-bottom: 10px;
+    display: block;
+    padding: 10px 10px;
+    border: 1.5px solid #b0b0b0;  
+    border-radius: 9999px;
+    width: 350px;
+    box-sizing: border-box;
+}
+
+.major_stock_prices {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* aタグをFlexにして左右に配置 */
+.major_stock_prices a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;          
+    font-size: 20px;
+    transition: color 0.1s; 
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.major_stock_prices a:hover {
+    color: #007bff;
+}
+
+/* spanはそのままでOK */
+.major_stock_prices span {
+    font-weight: bold;
+    color: #000;
+    margin-left: 0;  /* 余白はFlexで調整済みなので不要 */
+}
+
+
+
+.nikkei_chart {
+    width: 55%;
+}
+
+
+.tradingview-widget-container {
+    width: 100%;
+    height: 100%;
+}
+
+.m_container_2 h2{
+  margin-top: 50px;
+}
+
+/* ----------------------------------------------------search--------------------------------------------------- */
+.stock_data h1 {
+  font-size: 35px;
+}
+
+.s_container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+/* 左上（30%） */
+.stock_data {
+    width: 35%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.buy_sell {
+    width: 65%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 右上（70%） */
+.chart_img {
+    width: 65%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Plotly が生成する内部 div の幅も 100% に強制 */
+.chart_img > div {
+    width: 100% !important;
+}
+
+/* 下（100%） ← HTMLのクラス名に合わせて大文字で指定 */
+.stock_details_information {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
+.stock-table {
+    width: 100%;
+    border-collapse: collapse; /* 格子線を1本にする */
+    margin-top: 10px;
+}
+
+.stock-table th,
+.stock-table td {
+    border: 1px solid #000; /* 黒い格子線 */
+    padding: 8px 12px;
+}
+
+.stock-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+}
+/* ------------------------------------------------------------------------------------------------------------- */
+
+
+/* ----------------------------------------------portfolio------------------------------------------------------ */
+.m-portfolio {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.stocks-held {
+  width: 100%;
+  
+}
+
+
+.stocks-held tr {
+  height: 40px;
+    border-bottom: 1px solid #b0b0b0;
+    
+}
+h3 {
+  margin-top: 20px;
+}
+
+/* -------------------------------------------------------------------------------------------------------------- */
+
+
+/* ---------------------------------------------contact---------------------------------------------------------- */
+
+.contact {
+    font-size: 40px;
+    text-align: center;
+    margin: 0 auto;
+}

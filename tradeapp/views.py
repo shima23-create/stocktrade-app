@@ -52,22 +52,25 @@ import yfinance as yf
 import math
 from django.shortcuts import render
 
+# 検索ビュー
 def search_view(request):
     stock_data = {}
-    ticker_symbol = request.GET.get('ticker', '')  # URLパラメータで株シンボルを取得
+    ticker_symbol = request.GET.get('ticker', '')
 
     # ティッカーシンボルに数字が含まれていたら .T を付ける
     if any(char.isdigit() for char in ticker_symbol) and not ticker_symbol.endswith(".T"):
         yf_symbol = ticker_symbol + ".T"
     else:
         yf_symbol = ticker_symbol
+
     chart_img = get_chart(yf_symbol)
 
     if ticker_symbol:
         ticker = yf.Ticker(yf_symbol)
         company_name = ticker.info.get("longName")
-        # 当日株価データを取得（1日分）
-        hist = ticker.history(period="2d")  # 前日比を計算するため2日分取得
+
+        # 当日株価データ
+        hist = ticker.history(period="2d")
         if len(hist) >= 1:
             today = hist.iloc[-1]
             stock_price = math.ceil(today['Close'] * 100) / 100
@@ -75,14 +78,12 @@ def search_view(request):
             high_price = math.ceil(today['High'] * 100) / 100
             low_price = math.ceil(today['Low'] * 100) / 100
 
-            # 前日比計算
             if len(hist) >= 2:
                 prev_close = hist.iloc[-2]['Close']
                 diff_price = math.ceil((stock_price - prev_close) * 100) / 100
                 diff_percent = round((diff_price / prev_close) * 100, 2)
             else:
-                diff_price = None
-                diff_percent = None
+                diff_price = diff_percent = None
         else:
             stock_price = open_price = high_price = low_price = diff_price = diff_percent = None
 
@@ -98,24 +99,18 @@ def search_view(request):
             num = float(num)
             result = ""
             if num >= 1_0000_0000_0000:
-                cho = int(num // 1_0000_0000_0000)
-                result += f"{cho}兆"
+                result += f"{int(num // 1_0000_0000_0000)}兆"
                 num %= 1_0000_0000_0000
             if num >= 1_0000_0000:
-                oku = int(num // 1_0000_0000)
-                result += f"{oku}億"
+                result += f"{int(num // 1_0000_0000)}億"
                 num %= 1_0000_0000
             if num >= 1_0000:
-                man = int(num // 1_0000)
-                result += f"{man}万"
-                num %= 1_0000
-            if num > 0 and result == "":
-                return str(int(num))
-            return result or str(int(num))
+                result += f"{int(num // 1_0000)}万"
+            return result or "-"
 
         stock_data = {
-            'company_name' : company_name,
-            'chart_img' : chart_img,
+            'company_name': company_name,
+            'chart_img': chart_img,
             'ticker': yf_symbol,
             'stock_price': stock_price,
             'open_price': open_price,
@@ -133,7 +128,15 @@ def search_view(request):
             'net_income': format_trillion_billion_million(get_value('Net Income')),
         }
 
-    return render(request, 'tradeapp/search.html', {'stock_data': stock_data})
+    return render(
+        request,
+        'tradeapp/search.html',
+        {
+            'stock_data': stock_data,
+        }
+    )
+
+
 
 
 
@@ -151,10 +154,10 @@ from django.contrib import messages
 from .models import Portfolio
 from accounts.models import CustomUser
 import yfinance as yf
-from decimal import Decimal  # 追加
+from decimal import Decimal  
 
 
-
+# 株購入
 @login_required
 def buy_stock(request):
     if request.method == 'POST':
@@ -197,7 +200,7 @@ def buy_stock(request):
     return redirect('tradeapp:trade_view')
 
 
-
+# 株売却
 @login_required
 def sell_stock(request):
     if request.method == 'POST':
@@ -245,7 +248,7 @@ def sell_stock(request):
     return render(request, "tradeapp/sell.html")
 
 
-
+# ポートフォリオ
 @login_required
 def portfolio_view(request):
     portfolio_data = get_portfolio(request.user)
@@ -254,7 +257,7 @@ def portfolio_view(request):
         'balance': request.user.balance
     })
 
-
+# 保有率グラフ
 @login_required
 def holdings_ratio(request):
     user = request.user
@@ -298,7 +301,7 @@ def holdings_ratio(request):
 
 from decimal import Decimal
 from django.contrib import messages
-
+# 残高追加
 @login_required
 def add_balance(request):
     if request.method == "POST":
@@ -375,3 +378,72 @@ class ContactView(FormView):
             self.request, 'お問い合わせは正常に送信されました。')
             
         return super().form_valid(form)
+    
+
+#------------------------------------------ランキング-------------------------------------------
+
+import yfinance as yf
+import pandas as pd
+import os
+from django.shortcuts import render
+from django.conf import settings
+from datetime import datetime
+
+
+def ranking(request):
+
+    # =========================
+    # CSV読み込み（超高速）
+    # =========================
+    csv_path = os.path.join(settings.BASE_DIR, "nikkei50.csv")
+    master = pd.read_csv(csv_path)
+
+    tickers = master["code"].tolist()
+
+    # =========================
+    # 株価API（1回だけ）
+    # =========================
+    data = yf.download(
+        tickers=tickers,
+        period="2d",
+        interval="1d",
+        group_by="ticker",
+        progress=False
+    )
+
+    rows = []
+
+    for _, row in master.iterrows():
+        code = row["code"]
+        name = row["name"]
+
+        try:
+            df = data[code]
+
+            prev_close = df["Close"].iloc[-2]
+            today_close = df["Close"].iloc[-1]
+
+            rate = (today_close - prev_close) / prev_close * 100
+
+            rows.append({
+                "code": code.replace(".T", ""),
+                "name": name,
+                "price": round(today_close, 0),
+                "rate": round(rate, 2)
+            })
+
+        except:
+            continue
+
+    df = pd.DataFrame(rows)
+
+    top5_up = df.sort_values("rate", ascending=False).head(5).to_dict("records")
+    top5_down = df.sort_values("rate").head(5).to_dict("records")
+
+    context = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "top5_up": top5_up,
+        "top5_down": top5_down,
+    }
+
+    return render(request, "tradeapp/ranking.html", context)

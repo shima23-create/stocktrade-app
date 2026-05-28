@@ -12,8 +12,6 @@ urlpatterns = [
     path('sp500/', views.sp500_view, name = "sp500_view"),   #　sp500グラフ
     path('nasdaq/', views.nasdaq_view, name = "nasdaq_view"),#　NASDAQグラフ  #ドル円グラフ
     path('dollar_yen_conversion/', views.dollar_yen_conversion_view, name = "dollar_yen_conversion_view"),
-    # トレード画面
-    path('trade/', views.trade_view, name = "trade_view"),
     # 購入画面
     path('buy/', views.buy_stock, name='buy_stock'),
     # 売却画面
@@ -24,7 +22,8 @@ urlpatterns = [
     path('add_balance/', views.add_balance, name='add_balance'),
     # 保有率
     path('holdings_ratio/', views.holdings_ratio, name='holdings_ratio'),
-
+    # ランキング
+    path("ranking/", views.ranking, name="ranking"),
 
 
     path('contact/',views.ContactView.as_view(),name='contact'),

@@ -4,10 +4,9 @@
 <title>{% block title %}ホーム{% endblock %}</title>
 
     {% block content %}
-    
     <div class="m_container_1">
       <div class="major_stock">
-        <h1>現在の株価</h1>
+        <h1>現在の主要指標</h1>
         <ul class="major_stock_prices">
           <li><a href="{% url 'tradeapp:nikkei_view' %}">日経225<span>{{nikkei_price}}</span></a></li>
           <li><a href="{% url 'tradeapp:dow30_view' %}">NYダウ30<span>{{dow30_price}}</span></a></li>
@@ -17,7 +16,7 @@
         </ul>
       </div>
       <div class="nikkei_chart">
-        <h2>日経平均チャート</h2>
+        <h1>日経平均チャート</h1>
         <div class="tradingview-widget-container">
         <div id="tradingview_n225"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -46,7 +45,7 @@
       
         <h2 class="h2">保有銘柄</h2>
       
-      <table class="stocks-held">
+      <table class="stock-held">
           <tr>
               <th>銘柄</th>
               <th>購入価格</th>
@@ -70,7 +69,7 @@
                   style="color: red;"
               {% endif %}
               >
-                  {{ p.profit }}
+                  {{ p.profit }}円
               </td>
           </tr>
           {% endfor %}

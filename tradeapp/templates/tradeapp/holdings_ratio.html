@@ -13,9 +13,9 @@
     var colors = [];
     for (var i = 0; i < labels.length; i++) {
         if (labels[i] === "残高") {
-            colors.push('rgba(54, 162, 235, 0.8)'); // 残高は青
+            colors.push('rgba(54, 162, 235, 0.8)');
         } else {
-            colors.push(undefined); // 自動
+            colors.push(undefined);
         }
     }
 
@@ -26,13 +26,14 @@
         textinfo: "label+percent",
         insidetextorientation: "radial",
         marker: { colors: colors },
-        sort: false  // これで順序を固定
+        sort: false
     }];
 
     var layout = {
         height: 600,
         width: 600,
-        title: "保有資産の割合（円グラフ）"
+        title: "保有資産の割合（円グラフ）",
+        paper_bgcolor: "#eef3f9"
     };
 
     Plotly.newPlot('pie-chart', data, layout);

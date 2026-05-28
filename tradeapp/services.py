@@ -93,7 +93,24 @@ def get_chart(ticker_symbol: str):
 
     return chart_img
 
+#---------------------------------ニュース取得----------------------------------------------------
+# utils/news_api.py
+import requests
 
+API_KEY = "YOUR_API_KEY"
+
+def get_stock_news(ticker):
+    url = "https://www.alphavantage.co/query"
+    params = {
+        "function": "NEWS_SENTIMENT",
+        "tickers": ticker,
+        "apikey": API_KEY
+    }
+    res = requests.get(url, params=params)
+    data = res.json()
+    return data.get("feed", [])
+
+#=-----------------------------------------------------------------------------------------
 
 
 from decimal import Decimal
@@ -115,11 +132,16 @@ def get_portfolio(user):
         history = stock.history(period='1d')
         if not history.empty:
             current_price = history['Close'].iloc[-1]
+            current_price = round(current_price, 1)
+
+
         else:
             current_price = Decimal('0')  # データがない場合は0にする
 
         total_value = Decimal(str(current_price)) * p.quantity
         profit = (Decimal(str(current_price)) - p.purchase_price) * p.quantity
+        """profit = profit.quantize(Decimal('1'))"""
+
 
         portfolio_data.append({
             "company": p.company_name,

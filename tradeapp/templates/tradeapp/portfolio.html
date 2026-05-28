@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
 
 {% if messages %}
@@ -47,7 +48,7 @@
     </table>
 
 
-    <h3>残高：{{ balance }} 円</h3>
+    <h3>残高：{{ balance|floatformat:0|intcomma }} 円</h3>
 
 
     <form method="POST" action="{% url 'tradeapp:add_balance' %}">

@@ -91,7 +91,7 @@ def search_view(request):
         financials = ticker.financials
 
         def get_value(key):
-            return financials.loc[key][0] if key in financials.index else None
+            return financials.loc[key].iloc[0] if key in financials.index else None
 
         def format_trillion_billion_million(num):
             if num is None:

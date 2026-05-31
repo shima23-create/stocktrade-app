@@ -13,5 +13,3 @@ def signup_view(request):
         form = SignUpForm()
 
     return render(request, 'accounts/signup.html', {'form': form})
-
-

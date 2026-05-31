@@ -39,7 +39,12 @@
           <li><a href="{% url 'tradeapp:holdings_ratio' %}">保有率</a></li>
 
           {% if request.user.is_authenticated %}
-            <li><a href="{% url 'accounts:logout' %}">ログアウト</a></li>
+            <li>
+              <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit">ログアウト</button>
+              </form>
+            </li>
           {% else %}
             <li><a href="{% url 'accounts:login' %}">ログイン</a></li>
             <li><a href="{% url 'accounts:signup' %}">サインアップ</a></li>

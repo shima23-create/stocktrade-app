@@ -32,7 +32,7 @@ def home_view(request):
 
 
 def nikkei_view(request):
-    return render(request, 'tradeapp/nikkei.html')
+    return render(request, 'tradeapp/nikkei2.html')
 
 def dow30_view(request):
     return render(request, 'tradeapp/dow30.html')

@@ -140,16 +140,14 @@ def get_portfolio(user):
 
         total_value = Decimal(str(current_price)) * p.quantity
         profit = (Decimal(str(current_price)) - p.purchase_price) * p.quantity
-        """profit = profit.quantize(Decimal('1'))"""
-
 
         portfolio_data.append({
             "company": p.company_name,
-            "purchase_price": p.purchase_price,
+            "purchase_price": int(p.purchase_price),
             "quantity": p.quantity,
-            "current_price": current_price,
-            "total_value": total_value,
-            "profit": profit,
+            "current_price": int(current_price),
+            "total_value": int(total_value),
+            "profit": int(profit),
         })
 
     return portfolio_data

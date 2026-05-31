@@ -8,7 +8,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()  # DBに登録
             login(request, user)  # 自動ログイン
-            return redirect('tradeapp:trade_view')
+            return redirect('tradeapp:home')
     else:
         form = SignUpForm()
 

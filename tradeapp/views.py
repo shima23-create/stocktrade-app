@@ -64,7 +64,6 @@ def search_view(request):
     stock_data = {}
     ticker_symbol = request.GET.get('ticker', '')
 
-    # ティッカーシンボルに数字が含まれていたら .T を付ける
     if any(char.isdigit() for char in ticker_symbol) and not ticker_symbol.endswith(".T"):
         yf_symbol = ticker_symbol + ".T"
     else:
@@ -76,23 +75,22 @@ def search_view(request):
         ticker = yf.Ticker(yf_symbol)
         company_name = ticker.info.get("longName")
 
-        # 当日株価データ
-        hist = ticker.history(period="2d")
+        # 5日分取得してNaN行を除外（週末・取引時間外に対応）
+        hist = ticker.history(period="5d")
+        hist = hist.dropna(subset=['Close', 'Open', 'High', 'Low'])
+
         if len(hist) >= 1:
             today = hist.iloc[-1]
 
-            stock_price = safe_ceil(today['Close'])
-            open_price = safe_ceil(today['Open'])
-            high_price = safe_ceil(today['High'])
-            low_price = safe_ceil(today['Low'])
+            stock_price = math.ceil(today['Close'] * 100) / 100
+            open_price = math.ceil(today['Open'] * 100) / 100
+            high_price = math.ceil(today['High'] * 100) / 100
+            low_price = math.ceil(today['Low'] * 100) / 100
 
             if len(hist) >= 2:
                 prev_close = hist.iloc[-2]['Close']
-                if stock_price is not None and not math.isnan(float(prev_close)):
-                    diff_price = safe_ceil(stock_price - prev_close)
-                    diff_percent = round((diff_price / prev_close) * 100, 2)
-                else:
-                    diff_price = diff_percent = None
+                diff_price = math.ceil((stock_price - prev_close) * 100) / 100
+                diff_percent = round((diff_price / prev_close) * 100, 2)
             else:
                 diff_price = diff_percent = None
         else:

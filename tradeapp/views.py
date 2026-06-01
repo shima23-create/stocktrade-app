@@ -48,11 +48,18 @@ def dollar_yen_conversion_view(request):
 
 
 
-import yfinance as yf
 import math
+import pandas as pd
 from django.shortcuts import render
+import yfinance as yf
 
-# 検索ビュー
+
+def safe_ceil(val):
+    if val is None or (isinstance(val, float) and math.isnan(val)):
+        return None
+    return math.ceil(val * 100) / 100
+
+
 def search_view(request):
     stock_data = {}
     ticker_symbol = request.GET.get('ticker', '')
@@ -73,15 +80,19 @@ def search_view(request):
         hist = ticker.history(period="2d")
         if len(hist) >= 1:
             today = hist.iloc[-1]
-            stock_price = math.ceil(today['Close'] * 100) / 100
-            open_price = math.ceil(today['Open'] * 100) / 100
-            high_price = math.ceil(today['High'] * 100) / 100
-            low_price = math.ceil(today['Low'] * 100) / 100
+
+            stock_price = safe_ceil(today['Close'])
+            open_price = safe_ceil(today['Open'])
+            high_price = safe_ceil(today['High'])
+            low_price = safe_ceil(today['Low'])
 
             if len(hist) >= 2:
                 prev_close = hist.iloc[-2]['Close']
-                diff_price = math.ceil((stock_price - prev_close) * 100) / 100
-                diff_percent = round((diff_price / prev_close) * 100, 2)
+                if stock_price is not None and not math.isnan(float(prev_close)):
+                    diff_price = safe_ceil(stock_price - prev_close)
+                    diff_percent = round((diff_price / prev_close) * 100, 2)
+                else:
+                    diff_price = diff_percent = None
             else:
                 diff_price = diff_percent = None
         else:
@@ -97,6 +108,8 @@ def search_view(request):
             if num is None:
                 return "-"
             num = float(num)
+            if math.isnan(num):
+                return "-"
             result = ""
             if num >= 1_0000_0000_0000:
                 result += f"{int(num // 1_0000_0000_0000)}兆"
